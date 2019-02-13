@@ -16,6 +16,7 @@ module ActiveAdminImport
       :before_batch_import,
       :after_batch_import,
       :headers_rewrites,
+      :headers_add,
       :batch_size,
       :batch_transaction,
       :csv_options
@@ -66,6 +67,14 @@ module ActiveAdminImport
       csv_lines.map! do |line|
         from = line[index]
         line[index] = options[from] if options.key?(from)
+        line
+      end
+    end
+
+    def batch_add_new_col(options)
+      index = header_index(options[key])
+      csv_lines.map! do |line|
+        line[index] = options[value]
         line
       end
     end
@@ -125,6 +134,7 @@ module ActiveAdminImport
       headers = self.headers.present? ? self.headers.map(&:to_s) : yield
       @headers = Hash[headers.zip(headers.map { |el| el.underscore.gsub(/\s+/, '_') })].with_indifferent_access
       @headers.merge!(options[:headers_rewrites].symbolize_keys.slice(*@headers.symbolize_keys.keys))
+      @headers.merge!(Hash[options[:headers_add].zip(options[:headers_add])])
       @headers
     end
 
