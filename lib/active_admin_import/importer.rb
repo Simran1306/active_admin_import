@@ -72,9 +72,9 @@ module ActiveAdminImport
     end
 
     def batch_add_new_col(options)
-      index = header_index(options[key])
+      index = header_index(options[:key])
       csv_lines.map! do |line|
-        line[index] = options[value]
+        line[index] = options[:value]
         line
       end
     end
